@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './App.css';
 
 import WeatherDisplay from './components/WeatherDisplay';
@@ -11,23 +12,19 @@ const PLACES = [
 ];
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      activeCity: 0,
-    }
+
+  state = {
+    active: this.props.activeCity,
   }
 
-  changeCity = (e) => {
-    const newCity = e.target.getAttribute('cityid');
-    console.log(newCity);
-    this.setState({
-      activeCity: newCity,
-    })
+  submitChange = (i) => {
+    console.log(i);
+    this.setState({ active: i })
+    this.props.changeCity(i);
   }
 
   render() {
-    console.log('RENDERING');
+    console.log(this.props);
     return (
       <div className="App">
         <h1>Let's display some weather!</h1>
@@ -37,15 +34,20 @@ class App extends Component {
               key={i}
               className="btn"
               cityid={i}
-              onClick={this.changeCity}
+              onClick={this.submitChange.bind(this, i)}
             >{v.name}</button>
           ))}
         </div>
-        <WeatherDisplay key={this.state.activeCity} zip={PLACES[this.state.activeCity].zip}></WeatherDisplay>
+        <WeatherDisplay key={this.props.activeCity} zip={PLACES[this.props.activeCity].zip}></WeatherDisplay>
       </div>
     );
   }
 
+}
+
+App.propTypes = {
+  changeCity: PropTypes.func.isRequired,
+  activeCity: PropTypes.number.isRequired,
 }
 
 export default App;
